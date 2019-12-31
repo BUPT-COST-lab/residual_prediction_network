@@ -1,2 +1,2 @@
 # residual_prediction_network
-code for "residual network for human motion prediction"
+code for "A new stacked residual blocks based Encoder-Decoder structure for human motion prediction"
