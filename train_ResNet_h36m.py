@@ -78,6 +78,7 @@ class Model(object):
 		loss_train = []
 		self.pred_seq = []
 		self.tf_lr = tf.placeholder(tf.float32, shape=[])
+		self.is_training = tf.placeholder(tf.float32)
 		self.params = dict()
         
 
@@ -88,6 +89,7 @@ class Model(object):
 					# define a model
 					output_list = ResNet.ResNet(
 							self.x[i],
+							self.is_training,
 							FLAGS.seq_length,
 							FLAGS.input_length,
 							FLAGS.stacklength,
@@ -134,14 +136,16 @@ class Model(object):
 			print 'pretrain model: ',FLAGS.pretrained_model
 			self.saver.restore(self.sess, FLAGS.pretrained_model)
 
-	def train(self, inputs, lr):
+	def train(self, inputs, lr, is_training):
 		feed_dict = {self.x[i]: inputs[i] for i in range(FLAGS.n_gpu)}
 		feed_dict.update({self.tf_lr: lr})
+		feed_dict.update({self.is_training: is_training})
 		loss, _ = self.sess.run((self.loss_train, self.train_op), feed_dict)
 		return loss
 
-	def test(self, inputs):
+	def test(self, inputs,is_training):
 		feed_dict = {self.x[i]: inputs[i] for i in range(FLAGS.n_gpu)}
+		feed_dict.update({self.is_training: is_training})
 		gen_ims = self.sess.run(self.pred_seq, feed_dict)
 		return gen_ims
 
@@ -192,7 +196,7 @@ def main(argv=None):
 		inputs2=ims[:,FLAGS.input_length:]
 		inputs=np.concatenate((inputs1,inputs2),axis=1)
 		ims_list = np.split(inputs, FLAGS.n_gpu)
-		cost = model.train(ims_list, lr)
+		cost = model.train(ims_list, lr,1)
 		# inverse the input sequence
 		imv1=ims[:, ::-1]
 		if itr>=pretrain_iter:
@@ -208,7 +212,7 @@ def main(argv=None):
 		imv_rev2=imv1[:,FLAGS.input_length:]
 		ims_rev1=np.concatenate((imv_rev1,imv_rev2),axis=1)
 		ims_rev1 = np.split(ims_rev1, FLAGS.n_gpu)
-		cost += model.train(ims_rev1, lr)
+		cost += model.train(ims_rev1, lr,1)
 		cost = cost/2
 		
 		end_time = time.time()
@@ -260,7 +264,7 @@ def main(argv=None):
 				test_dat2=test_ims[:,FLAGS.input_length:]
 				test_dat=np.concatenate((test_dat1,test_dat2),axis=1)
 				test_dat = np.split(test_dat, FLAGS.n_gpu)
-				img_gen = model.test(test_dat)
+				img_gen = model.test(test_dat,0)
 				end_time1 = time.time()
 				t1=end_time1-start_time1
 				test_time += t1
