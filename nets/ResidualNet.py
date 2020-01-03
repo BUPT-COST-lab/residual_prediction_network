@@ -3,7 +3,7 @@ from layers.ResBlock import ResBlock as RB
 import pdb
 import numpy as np
 
-def ResNet(images,keep_prob, seq_length, input_length, stacklength, num_hidden,filter_size):
+def ResNet(images,is_training, seq_length, input_length, stacklength, num_hidden,filter_size):
 	with tf.variable_scope('TrajNet', reuse=False):
 		print 'ResNet'
 		#print 'is_training', is_training
@@ -11,7 +11,7 @@ def ResNet(images,keep_prob, seq_length, input_length, stacklength, num_hidden,f
 		gt_images=images[:,seq_length:]
 		dims=gt_images.shape[1]*gt_images.shape[2]*gt_images.shape[3]
 		inputs = h
-		if keep_prob is not 1:
+		if is_training is 1:
 			training = True
 		else:
 			training = False
