@@ -1,17 +1,17 @@
 import tensorflow as tf
 
 class ResBlock():
-	def __init__(self,layer_name, filter_size,num_hidden,keep_prob):
+	def __init__(self,layer_name, filter_size,num_hidden,is_training):
 		self.layer_name=layer_name
 		self.filter_size=filter_size
-		self.keep_prob = keep_prob
+		self.keep_prob = is_training
 		self.num_hidden = num_hidden
 
 	def __call__(self, h, reuse=False):
 		with tf.variable_scope(self.layer_name, reuse=False):
 			out=[]
 			filter_size=self.filter_size
-			if self.keep_prob is 1:
+			if self.is_training is 1:
 				training=True
 			else:
 				training=False
