@@ -11,7 +11,7 @@ class ResBlock():
 		with tf.variable_scope(self.layer_name, reuse=False):
 			out=[]
 			filter_size=self.filter_size
-			if self.keep_prob is not 1:
+			if self.keep_prob is 1:
 				training=True
 			else:
 				training=False
