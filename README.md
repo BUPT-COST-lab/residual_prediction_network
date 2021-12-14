@@ -7,11 +7,6 @@ Liu X, Yin J. Stacked residual blocks based encoder–decoder framework for huma
 Required python libraries: tensorflow (>=1.0) + opencv + numpy.
 Tested in ubuntu/centOS + nvidia titan X (Pascal) with cuda (>=8.0) and cudnn (>=5.0).
 
-## Datasets
-Human3.6M, CMU-Mocap, 3DPW.
-```
-the processed datafile will be available at:
-```
 
 ## Training
 Use the `scripts/ResNet_short_term_train_2.sh` to train/test by the following commands:
